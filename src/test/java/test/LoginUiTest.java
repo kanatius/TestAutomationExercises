@@ -20,6 +20,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
@@ -45,6 +46,7 @@ public class LoginUiTest {
     
     @AfterAll
     public static void tearDownClass() {
+        LoginUiTest.driver.quit();
     }
     
     @BeforeEach
@@ -53,7 +55,7 @@ public class LoginUiTest {
     
     @AfterEach
     public void tearDown() {
-        LoginUiTest.driver.quit();
+        
     }
     
     @Test
@@ -69,12 +71,37 @@ public class LoginUiTest {
         //put the string in the input and press ENTER
         input.sendKeys("Jhon law" + Keys.ENTER);
         
-        WebElement firstResult =  wait.until(presenceOfElementLocated(By.cssSelector("h3")));
+        WebElement firstResult =  wait.until(
+                presenceOfElementLocated(By.cssSelector("h3"))
+        );
         
         //navigate to the first link
         firstResult.click();
         
         assertTrue(LoginUiTest.driver.getCurrentUrl().toLowerCase().contains("wikipedia"));
+    }
+    
+    @Test
+    //verifies wether the first page shown in the search is from wikipedia
+    public void testthirdPageIsYoutube(){
+        
+        LoginUiTest.driver.get("https://google.com/");
+        
+        WebElement input = LoginUiTest.driver.findElement(By.name("q"));
+        
+        WebDriverWait wait = new WebDriverWait(LoginUiTest.driver, 10);
+        
+        //put the string in the input and press ENTER
+        input.sendKeys("Jhon law" + Keys.ENTER);
+        
+        WebElement thirdElement = wait.until(
+                presenceOfAllElementsLocatedBy(By.cssSelector("h3"))
+        ).get(2);
+        
+        //navigate to the first link
+        thirdElement.click();
+        
+        assertTrue(LoginUiTest.driver.getCurrentUrl().toLowerCase().contains("youtube"));
     }
     
 }
